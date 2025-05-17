@@ -1,0 +1,21 @@
+{
+  "nodes": {
+    "A": {"lat": 30.7300, "lng": 76.7700},
+    "B": {"lat": 30.7400, "lng": 76.7600},
+    "C": {"lat": 30.7500, "lng": 76.7500},
+    "D": {"lat": 30.7600, "lng": 76.7400},
+    "E": {"lat": 30.7700, "lng": 76.7300},
+    "F": {"lat": 30.7800, "lng": 76.7200}
+  },
+  "edges": [
+    {"from": "A", "to": "B", "weight": 1.5},
+    {"from": "B", "to": "C", "weight": 1.2},
+    {"from": "C", "to": "D", "weight": 1.3},
+    {"from": "D", "to": "E", "weight": 1.4},
+    {"from": "E", "to": "F", "weight": 1.5},
+    {"from": "A", "to": "C", "weight": 2.5},
+    {"from": "B", "to": "D", "weight": 2.2},
+    {"from": "C", "to": "E", "weight": 2.3},
+    {"from": "D", "to": "F", "weight": 2.4}
+  ]
+}
