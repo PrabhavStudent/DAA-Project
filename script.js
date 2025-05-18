@@ -4,7 +4,7 @@ let directionsRenderer;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 30.7333, lng: 76.7794 },
+    center: { lat: 30.3165, lng: 78.0322 },
     zoom: 13,
   });
   directionsService = new google.maps.DirectionsService();
@@ -53,7 +53,7 @@ function findRide() {
         map.setCenter({ lat: data.path[0].lat, lng: data.path[0].lng });
         map.setZoom(15);
       } else {
-        map.setCenter({ lat: 30.7333, lng: 76.7794 });
+        map.setCenter({ lat: 30.3165, lng: 78.0322 });
         map.setZoom(13);
         document.getElementById('info').innerHTML = "<p>No route found.</p>";
       }
