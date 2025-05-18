@@ -1,13 +1,15 @@
+let map;
+let directionsService;
+let directionsRenderer;
 
-let map = L.map('map').setView([30.7333, 76.7794], 13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-let currentRoute;
-let startMarker;
-let endMarker;
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    center: { lat: 30.7333, lng: 76.7794 },
+    zoom: 13,
+  });
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+}
 
 function findRide() {
   const userId = document.getElementById('userId').value;
@@ -25,34 +27,35 @@ function findRide() {
     .then(data => {
       console.log("Client-side Data:", data);
 
-      if (currentRoute) {
-        map.removeLayer(currentRoute);
-      }
-      if (startMarker) {
-        map.removeLayer(startMarker);
-      }
-      if (endMarker) {
-        map.removeLayer(endMarker);
+      if (directionsRenderer) {
+        directionsRenderer.set('directions', null);
       }
 
-      if (data.path && data.path.length > 0) {
-        const latlngs = data.path.map(point => [point.lat, point.lng]);
+      if (data.path && data.path.length > 1) {
+        const start = data.path[0];
+        const end = data.path[data.path.length - 1];
 
-        if (latlngs.length > 1) {
-          currentRoute = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(map);
-          map.fitBounds(currentRoute.getBounds());
+        const request = {
+          origin: { lat: start.lat, lng: start.lng },
+          destination: { lat: end.lat, lng: end.lng },
+          travelMode: google.maps.TravelMode.DRIVING,
+          optimizeWaypoints: true,
+        };
 
-          startMarker = L.marker(latlngs[0]).addTo(map).bindPopup("Start");
-          endMarker = L.marker(latlngs[latlngs.length - 1]).addTo(map).bindPopup("End");
-        } else if (latlngs.length === 1) {
-          startMarker = L.marker(latlngs[0]).addTo(map).bindPopup("User Location");
-          map.setView(latlngs[0], 15);
-        }
+        directionsService.route(request, (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            directionsRenderer.setDirections(result);
+          } else {
+            alert('Could not display directions due to: ' + status);
+          }
+        });
+      } else if (data.path && data.path.length === 1) {
+        map.setCenter({ lat: data.path[0].lat, lng: data.path[0].lng });
+        map.setZoom(15);
       } else {
+        map.setCenter({ lat: 30.7333, lng: 76.7794 });
+        map.setZoom(13);
         document.getElementById('info').innerHTML = "<p>No route found.</p>";
-        // Removed undefined 'users' reference to avoid errors
-        // Optionally, set map view to default location
-        map.setView([30.7333, 76.7794], 13);
       }
 
       document.getElementById('info').innerHTML = `

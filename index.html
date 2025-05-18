@@ -3,16 +3,17 @@
 <head>
   <title>Smart Ride Hailing</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Removed Leaflet CSS -->
 </head>
 <body>
   <h1>Smart Ride Hailing</h1>
   <input type="number" id="userId" placeholder="Enter User ID (1-10)" />
   <button onclick="findRide()">Find Ride</button>
-  <div id="map"></div>
+  <div id="map" style="height: 500px; width: 100%;"></div>
   <div id="info"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Added Google Maps JS API script with placeholder for API key -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdqjraOI_SUO71fOMSE2sCtZx6PxGKYAU&callback=initMap" async defer></script>
   <script src="script.js"></script>
 </body>
 </html>
