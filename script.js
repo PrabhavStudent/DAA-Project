@@ -1,11 +1,13 @@
+
 let map = L.map('map').setView([30.7333, 76.7794], 13);
 
-// Add OpenStreetMap tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-let currentRoute; // To keep reference of current polyline
+let currentRoute;
+let startMarker;
+let endMarker;
 
 function findRide() {
   const userId = document.getElementById('userId').value;
@@ -21,21 +23,38 @@ function findRide() {
       return response.json();
     })
     .then(data => {
-      // Clear previous route if exists
+      console.log("Client-side Data:", data);
+
       if (currentRoute) {
         map.removeLayer(currentRoute);
       }
+      if (startMarker) {
+        map.removeLayer(startMarker);
+      }
+      if (endMarker) {
+        map.removeLayer(endMarker);
+      }
 
-      // Set map view to first point
       if (data.path && data.path.length > 0) {
         const latlngs = data.path.map(point => [point.lat, point.lng]);
 
-        // Draw route on map
-        currentRoute = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(map);
-        map.fitBounds(currentRoute.getBounds());
+        if (latlngs.length > 1) {
+          currentRoute = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(map);
+          map.fitBounds(currentRoute.getBounds());
+
+          startMarker = L.marker(latlngs[0]).addTo(map).bindPopup("Start");
+          endMarker = L.marker(latlngs[latlngs.length - 1]).addTo(map).bindPopup("End");
+        } else if (latlngs.length === 1) {
+          startMarker = L.marker(latlngs[0]).addTo(map).bindPopup("User Location");
+          map.setView(latlngs[0], 15);
+        }
+      } else {
+        document.getElementById('info').innerHTML = "<p>No route found.</p>";
+        // Removed undefined 'users' reference to avoid errors
+        // Optionally, set map view to default location
+        map.setView([30.7333, 76.7794], 13);
       }
 
-      // Show ride info
       document.getElementById('info').innerHTML = `
         <h3>Ride Details</h3>
         <p><strong>Driver Name:</strong> ${data.driverName}</p>
@@ -47,6 +66,7 @@ function findRide() {
     })
     .catch(err => {
       console.error(err);
+      document.getElementById('info').innerHTML = "<p>Error fetching ride. Please check console.</p>";
       alert("Error fetching ride. Please check the console for details.");
     });
 }
