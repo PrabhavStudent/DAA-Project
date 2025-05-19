@@ -79,7 +79,7 @@ async function calculateRoute(startLat, startLng, endLat, endLng, graph, nodes) 
 
     let startNode = null;
     let minStartDistance = Infinity;
-    const DISTANCE_THRESHOLD = 2.0;
+    const DISTANCE_THRESHOLD = 100.0;
     let potentialStartNodes = [];
 
     for (const nodeKey in nodes) {
